@@ -3,8 +3,8 @@ import React, { Component } from "react";
 import Navbar from "../../Navbar/Navigation";
 import NavbarAdmin from "../../Navbar/NavigationAdmin";
 
-import getWeb3 from "../../../getWeb3";
 import Election from "../../../contracts/Election.json";
+import getWeb3 from "../../../getWeb3";
 
 import AdminOnly from "../../AdminOnly";
 
@@ -20,6 +20,7 @@ export default class AddCandidate extends Component {
       isAdmin: false,
       header: "",
       slogan: "",
+      party: "",
       candidates: [],
       candidateCount: undefined,
     };
@@ -74,6 +75,7 @@ export default class AddCandidate extends Component {
           id: candidate.candidateId,
           header: candidate.header,
           slogan: candidate.slogan,
+          party: candidate.party
         });
       }
 
@@ -92,10 +94,13 @@ export default class AddCandidate extends Component {
   updateSlogan = (event) => {
     this.setState({ slogan: event.target.value });
   };
+  updateParty = (event) => {
+    this.setState({ party: event.target.value });
+  };
 
   addCandidate = async () => {
     await this.state.ElectionInstance.methods
-      .addCandidate(this.state.header, this.state.slogan)
+      .addCandidate(this.state.header, this.state.slogan, this.state.party)
       .send({ from: this.state.account, gas: 1000000 });
     window.location.reload();
   };
@@ -145,6 +150,16 @@ export default class AddCandidate extends Component {
                   onChange={this.updateSlogan}
                 />
               </label>
+              <label className={"label-ac"}>
+                Party
+                <input
+                  className={"input-ac"}
+                  type="text"
+                  placeholder="eg. Never again"
+                  value={this.state.party}
+                  onChange={this.updateParty}
+                />
+              </label>
               <button
                 className="btn-add"
                 disabled={
@@ -175,6 +190,7 @@ export function loadAdded(candidates) {
           >
             {candidate.id}. <strong>{candidate.header}</strong>:{" "}
             {candidate.slogan}
+            {candidate.party}
           </div>
         </div>
       </>
