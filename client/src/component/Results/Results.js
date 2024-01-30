@@ -206,12 +206,6 @@ export function displayResults(candidates) {
                 {candidates.map(renderResults)}
               </table>
             </div>
-            <div
-              className="container-item"
-              style={{ border: "1px solid black" }}
-            >
-              <center>That is all.</center>
-            </div>
           </>
         )}
       </div>

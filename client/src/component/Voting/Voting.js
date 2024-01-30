@@ -235,12 +235,6 @@ export default class Voting extends Component {
                 ) : (
                   <>
                     {this.state.candidates.map(this.renderCandidates)}
-                    <div
-                      className="container-item"
-                      style={{ border: "1px solid black" }}
-                    >
-                      <center>That is all.</center>
-                    </div>
                   </>
                 )}
               </div>
