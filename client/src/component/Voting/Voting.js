@@ -8,8 +8,8 @@ import NavbarAdmin from "../Navbar/NavigationAdmin";
 import NotInit from "../NotInit";
 
 // Contract
-import getWeb3 from "../../getWeb3";
 import Election from "../../contracts/Election.json";
+import getWeb3 from "../../getWeb3";
 
 // CSS
 import "./Voting.css";
@@ -99,6 +99,8 @@ export default class Voting extends Component {
           address: voter.voterAddress,
           name: voter.name,
           phone: voter.phone,
+          age: voter.age,
+          gender: voter.gender,
           hasVoted: voter.hasVoted,
           isVerified: voter.isVerified,
           isRegistered: voter.isRegistered,

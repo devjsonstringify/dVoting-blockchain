@@ -10,8 +10,8 @@ import NotInit from "../NotInit";
 import "./Registration.css";
 
 // Contract
-import getWeb3 from "../../getWeb3";
 import Election from "../../contracts/Election.json";
+import getWeb3 from "../../getWeb3";
 
 export default class Registration extends Component {
   constructor(props) {
@@ -26,11 +26,15 @@ export default class Registration extends Component {
       voterCount: undefined,
       voterName: "",
       voterPhone: "",
+      voterAge: null,
+      voterGender: "", 
       voters: [],
       currentVoter: {
         address: undefined,
         name: null,
         phone: null,
+        age: null,
+        gender: null,
         hasVoted: false,
         isVerified: false,
         isRegistered: false,
@@ -97,6 +101,8 @@ export default class Registration extends Component {
           address: voter.voterAddress,
           name: voter.name,
           phone: voter.phone,
+          age: voter.age,
+          gender: voter.gender,
           hasVoted: voter.hasVoted,
           isVerified: voter.isVerified,
           isRegistered: voter.isRegistered,
@@ -113,6 +119,8 @@ export default class Registration extends Component {
           address: voter.voterAddress,
           name: voter.name,
           phone: voter.phone,
+          age: voter.voterAge,
+          gender: voter.gender,
           hasVoted: voter.hasVoted,
           isVerified: voter.isVerified,
           isRegistered: voter.isRegistered,
@@ -132,10 +140,16 @@ export default class Registration extends Component {
   updateVoterPhone = (event) => {
     this.setState({ voterPhone: event.target.value });
   };
+  updateVoterAge = (event) => {
+    this.setState({ voterAge: event.target.value });
+  };
+  updateVoterGender = (event) => {
+    this.setState({ voterGender: event.target.value });
+  };
   registerAsVoter = async () => {
     await this.state.ElectionInstance.methods
-      .registerAsVoter(this.state.voterName, this.state.voterPhone)
-      .send({ from: this.state.account, gas: 1000000 });
+    .registerAsVoter(this.state.voterName, this.state.voterPhone, this.state.voterAge, this.state.voterGender)
+    .send({ from: this.state.account, gas: 1000000 });
     window.location.reload();
   };
   render() {
@@ -196,7 +210,35 @@ export default class Registration extends Component {
                         onChange={this.updateVoterPhone}
                       />
                     </label>
+                    </div>
+                     <div className="div-li">
+                    <label className={"label-r"}>
+                      Age  <span style={{ color: "tomato" }}>*</span>
+                      <input
+                        className={"input-r"}
+                        type="number"
+                        placeholder="eg. 18"
+                          min="18"
+                          max="150" 
+                        value={this.state.voterAge}
+                        onChange={this.updateVoterAge}
+                      />
+                    </label>
                   </div>
+                    <div class="div-li">
+                      <label class="label-r">
+                        Gender <span style={{color: "tomato"}}>*</span>
+                        <select
+                          class="input-r"
+                          value={this.state.voterGender}
+                          onChange={this.updateVoterGender}
+                        >
+                          <option value="" disabled>Select gender</option>
+                          <option value="Male">Male</option>
+                          <option value="Female">Female</option>
+                        </select>
+                      </label>
+                    </div>
                   <p className="note">
                     <span style={{ color: "tomato" }}> Note: </span>
                     <br /> Make sure your account address and Phone number are
@@ -270,6 +312,14 @@ export function loadCurrentVoter(voter, isRegistered) {
           <tr>
             <th>Phone</th>
             <td>{voter.phone}</td>
+          </tr>
+          <tr>
+            <th>Age</th>
+            <td>{voter.age}</td>
+          </tr>
+          <tr>
+            <th>Gender</th>
+            <td>{voter.gender}</td>
           </tr>
           <tr>
             <th>Voted</th>

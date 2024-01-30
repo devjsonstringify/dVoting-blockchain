@@ -5,8 +5,8 @@ import NavbarAdmin from "../../Navbar/NavigationAdmin";
 
 import AdminOnly from "../../AdminOnly";
 
-import getWeb3 from "../../../getWeb3";
 import Election from "../../../contracts/Election.json";
+import getWeb3 from "../../../getWeb3";
 
 import "./Verification.css";
 
@@ -67,15 +67,17 @@ export default class Registration extends Component {
       // Loading all the voters
       for (let i = 0; i < this.state.voterCount; i++) {
         const voterAddress = await this.state.ElectionInstance.methods
-          .voters(i)
-          .call();
+        .voters(i)
+        .call();
         const voter = await this.state.ElectionInstance.methods
-          .voterDetails(voterAddress)
+        .voterDetails(voterAddress)
           .call();
         this.state.voters.push({
           address: voter.voterAddress,
           name: voter.name,
           phone: voter.phone,
+          age: voter.voterAge,
+          gender: voter.gender,
           hasVoted: voter.hasVoted,
           isVerified: voter.isVerified,
           isRegistered: voter.isRegistered,
@@ -93,8 +95,8 @@ export default class Registration extends Component {
   renderUnverifiedVoters = (voter) => {
     const verifyVoter = async (verifiedStatus, address) => {
       await this.state.ElectionInstance.methods
-        .verifyVoter(verifiedStatus, address)
-        .send({ from: this.state.account, gas: 1000000 });
+      .verifyVoter(verifiedStatus, address)
+      .send({ from: this.state.account, gas: 1000000 });
       window.location.reload();
     };
     return (
@@ -132,6 +134,14 @@ export default class Registration extends Component {
             <tr>
               <th>Phone</th>
               <td>{voter.phone}</td>
+            </tr>
+            <tr>
+              <th>Age</th>
+              <td>{voter.age}</td>
+            </tr>
+            <tr>
+              <th>Gender</th>
+              <td>{voter.gender}</td>
             </tr>
             <tr>
               <th>Voted</th>

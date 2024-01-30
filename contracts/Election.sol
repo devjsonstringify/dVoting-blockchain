@@ -32,12 +32,13 @@ contract Election {
         uint256 candidateId;
         string header;
         string slogan;
+        string party;
         uint256 voteCount;
     }
     mapping(uint256 => Candidate) public candidateDetails;
 
     // Adding new candidates
-    function addCandidate(string memory _header, string memory _slogan)
+    function addCandidate(string memory _header, string memory _slogan, string memory _party)
         public
         // Only admin can add
         onlyAdmin
@@ -47,6 +48,7 @@ contract Election {
                 candidateId: candidateCount,
                 header: _header,
                 slogan: _slogan,
+                party: _party,
                 voteCount: 0
             });
         candidateDetails[candidateCount] = newCandidate;
@@ -118,6 +120,8 @@ contract Election {
         address voterAddress;
         string name;
         string phone;
+        uint256 age;
+        string gender;
         bool isVerified;
         bool hasVoted;
         bool isRegistered;
@@ -126,12 +130,14 @@ contract Election {
     mapping(address => Voter) public voterDetails;
 
     // Request to be added as voter
-    function registerAsVoter(string memory _name, string memory _phone) public {
+    function registerAsVoter(string memory _name, string memory _phone, uint256 _age, string memory _gender) public {
         Voter memory newVoter =
             Voter({
                 voterAddress: msg.sender,
                 name: _name,
                 phone: _phone,
+                age: _age,
+                gender: _gender,
                 hasVoted: false,
                 isVerified: false,
                 isRegistered: true
