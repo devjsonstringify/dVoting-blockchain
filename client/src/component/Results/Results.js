@@ -8,8 +8,8 @@ import NavbarAdmin from "../Navbar/NavigationAdmin";
 import NotInit from "../NotInit";
 
 // Contract
-import getWeb3 from "../../getWeb3";
 import Election from "../../contracts/Election.json";
+import getWeb3 from "../../getWeb3";
 
 // CSS
 import "./Results.css";
@@ -74,6 +74,7 @@ export default class Result extends Component {
           id: candidate.candidateId,
           header: candidate.header,
           slogan: candidate.slogan,
+          party: candidate.party,
           voteCount: candidate.voteCount,
         });
       }
@@ -175,6 +176,7 @@ export function displayResults(candidates) {
       <tr>
         <td>{candidate.id}</td>
         <td>{candidate.header}</td>
+        <td>{candidate.party}</td>
         <td>{candidate.voteCount}</td>
       </tr>
     );
@@ -198,6 +200,7 @@ export function displayResults(candidates) {
                 <tr>
                   <th>Id</th>
                   <th>Candidate</th>
+                  <th>Party</th>
                   <th>Votes</th>
                 </tr>
                 {candidates.map(renderResults)}
