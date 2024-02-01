@@ -1,4 +1,5 @@
 // Node modules
+import Plotly from 'plotly.js-dist-min';
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
@@ -12,6 +13,7 @@ import Election from "../../contracts/Election.json";
 import getWeb3 from "../../getWeb3";
 
 // CSS
+import { gridContainerStyle, gridItemStyle } from '../SharedStyling/style';
 import "./Results.css";
 
 export default class Result extends Component {
@@ -24,6 +26,7 @@ export default class Result extends Component {
       isAdmin: false,
       candidateCount: undefined,
       candidates: [],
+      votersDetails: [],
       isElStarted: false,
       isElEnded: false,
     };
@@ -58,7 +61,13 @@ export default class Result extends Component {
         .getTotalCandidate()
         .call();
       this.setState({ candidateCount: candidateCount });
-
+      
+      const totalVoters = await this.state.ElectionInstance.methods.getTotalVoter().call();
+      for (let i = 0; i < totalVoters; i++) {
+          const voterDetail = await this.state.ElectionInstance.methods.getVoterDetails(i).call();
+          this.state.votersDetails.push({voterDetail});
+      }
+      
       // Get start and end values
       const start = await this.state.ElectionInstance.methods.getStart().call();
       this.setState({ isElStarted: start });
@@ -79,7 +88,88 @@ export default class Result extends Component {
         });
       }
 
-      this.setState({ candidates: this.state.candidates });
+      // Extract candidate data for data visualization
+      let pieDataByCandidate = [{
+        values: [],
+        labels: [],
+        type: 'pie'
+      }];
+
+      let layout = {
+        height: 400,
+        width: 615,
+      };
+
+      const config = { responsive: true }
+      
+      if (this.state.candidates.length > 0){
+        const pieDataByCandidateLabels= this.state.candidates.map((({ header }) =>   header))
+        const pieDataByCandidateValues = this.state.candidates.map((({ voteCount }) => voteCount))
+        
+        pieDataByCandidate.forEach((data) => {
+          data.values = [...data.values, ...pieDataByCandidateValues];
+          data.labels = [...data.labels, ...pieDataByCandidateLabels];
+        });
+
+        const pieDataByPartyValues = this.state.candidates.map((({ voteCount }) =>   voteCount))
+        const pieDataByPartyLabels = this.state.candidates.map((({ party }) => party))
+        
+        const xValue = pieDataByPartyLabels 
+        const yValue = pieDataByPartyValues
+
+        const traceBarChartByParty = {
+          x: xValue,
+          y: yValue,
+          type: 'bar',
+          text: yValue.map(String),
+          textposition: 'auto',
+          marker: {
+          color: 'rgb(158,202,225)',
+          opacity: 0.6,
+          line: {
+            color: 'rgb(8,48,107)',
+            width: 1.5
+          }
+        }
+        };
+
+      const dataBarChartByParty = [traceBarChartByParty];
+
+      let barChartByTotalVotes = [
+        {
+        x: pieDataByCandidateLabels,
+        y: pieDataByCandidateValues,
+        text: yValue.map(String),
+        color: 'rgb(158,202,225)',
+        opacity: 0.6,
+        line: {
+            color: 'rgb(8,48,107)',
+            width: 1.5
+          },
+        type: 'bar'
+        }
+        ];
+        
+       const voterDetail = this.state.votersDetails.map(item => {
+        return item.voterDetail
+       });
+        
+      const voterAge = voterDetail.map(({ age }) => age)
+      const voterGender = voterDetail.map(({ gender }) => gender)
+      
+    let trace1 = {
+      x: voterGender,
+      y: voterAge,
+      name: 'SF Zoo',
+      type: 'bar'
+    };
+    
+     let barChartByGenderAndAge = [trace1];
+      Plotly.newPlot('pieChartByCandidate', pieDataByCandidate, {...layout, title: 'Percentage Breakdown of Total Votes'}, config);
+      Plotly.newPlot('barChartByParty', dataBarChartByParty, {...layout, title: 'Percentage Breakdown by party', barmode: 'stack'},  config);
+      Plotly.newPlot('barChartByTotalVotes', barChartByTotalVotes, {...layout, title: 'Total votes'},  config);
+      Plotly.newPlot('barChartByTotalGender', barChartByGenderAndAge, {...layout, title: 'Total votes by voters gender'},  config);
+      }
 
       // Admin account and verification
       const admin = await this.state.ElectionInstance.methods.getAdmin().call();
@@ -171,44 +261,26 @@ function displayWinner(candidates) {
 }
 
 export function displayResults(candidates) {
-  const renderResults = (candidate) => {
-    return (
-      <tr>
-        <td>{candidate.id}</td>
-        <td>{candidate.header}</td>
-        <td>{candidate.party}</td>
-        <td>{candidate.voteCount}</td>
-      </tr>
-    );
-  };
   return (
     <>
       {candidates.length > 0 ? (
         <div className="container-main">{displayWinner(candidates)}</div>
       ) : null}
-      <div className="container-main" style={{ borderTop: "1px solid" }}>
-        <h2>Results</h2>
-        <small>Total candidates: {candidates.length}</small>
-        {candidates.length < 1 ? (
-          <div className="container-item attention">
-            <center>No candidates.</center>
-          </div>
-        ) : (
-          <>
-            <div className="container-item">
-              <table>
-                <tr>
-                  <th>Id</th>
-                  <th>Candidate</th>
-                  <th>Party</th>
-                  <th>Votes</th>
-                </tr>
-                {candidates.map(renderResults)}
-              </table>
-            </div>
-          </>
-        )}
+      <h2 style={{ textAlign: "center"}}>Data visualization of the results</h2>
+      <div style={gridContainerStyle}>
+        <div style={{...gridItemStyle}}>
+          <div id="pieChartByCandidate"></div>
       </div>
+      <div style={{...gridItemStyle}}>
+          <div id="barChartByParty"></div>
+        </div>
+      <div style={{...gridItemStyle}}>
+          <div id="barChartByTotalVotes"></div>
+      </div>
+      <div style={{...gridItemStyle}}>
+          <div id="barChartByTotalGender"></div>
+      </div>
+    </div>
     </>
   );
 }
