@@ -13,7 +13,6 @@ nav {
   height: 11vh;
   background: tomato;
   justify-content: space-around;
-  position: sticky;
   top: 0;
   align-items: center;
 }
