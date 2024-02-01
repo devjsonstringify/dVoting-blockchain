@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.21 <0.9.0;
+pragma experimental ABIEncoderV2;
 
 contract Election {
     address public admin;
@@ -164,6 +165,11 @@ contract Election {
         require(end == false);
         candidateDetails[candidateId].voteCount += 1;
         voterDetails[msg.sender].hasVoted = true;
+    }
+
+    function getVoterDetails(uint256 index) public view onlyAdmin returns (Voter memory) {
+        require(index < voters.length, "Invalid index");
+        return voterDetails[voters[index]];
     }
 
     // End election
