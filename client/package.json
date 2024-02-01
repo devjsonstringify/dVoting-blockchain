@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "plotly.js-dist-min": "^2.28.0",
     "react": "16.11.0",
     "react-dom": "16.11.0",
     "react-file-reader": "^1.1.4",
@@ -13,7 +14,10 @@
     "web3": "1.2.2"
   },
   "scripts": {
-    "start": "react-scripts --openssl-legacy-provider start",
+    "start:frontend": "react-scripts --openssl-legacy-provider start",
+    "start:truffle": "cd ../ && truffle migrate",
+    "start:ganache": "cd ../ && ganache-cli",
+    "dev": "concurrently \"npm run start:truffle\" \"npm run start:ganache\" \"npm run start:frontend\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
