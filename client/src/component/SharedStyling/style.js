@@ -19,3 +19,9 @@ export const gridItemStyle = {
   boxSizing: 'border-box',
   flexDirection: 'column',
 };
+
+export const winnerImageBg = {
+  width: '100%',
+  height: '100%',
+  maxWidth: '100%'
+}

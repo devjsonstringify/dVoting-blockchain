@@ -4,16 +4,16 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 // Components
+import winnerImage from "../../images/winner.jpg";
 import Navbar from "../Navbar/Navigation";
 import NavbarAdmin from "../Navbar/NavigationAdmin";
 import NotInit from "../NotInit";
-
 // Contract
 import Election from "../../contracts/Election.json";
 import getWeb3 from "../../getWeb3";
 
 // CSS
-import { gridContainerStyle, gridItemStyle } from '../SharedStyling/style';
+import { gridContainerStyle, gridItemStyle, winnerImageBg } from '../SharedStyling/style';
 import "./Results.css";
 
 export default class Result extends Component {
@@ -198,7 +198,6 @@ export default class Result extends Component {
     return (
       <>
         {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
-        <br />
         <div>
           {!this.state.isElStarted && !this.state.isElEnded ? (
             <NotInit />
@@ -243,17 +242,12 @@ function displayWinner(candidates) {
   };
   const renderWinner = (winner) => {
     return (
-      <div className="container-winner">
-        <div className="winner-info">
-          <p className="winner-tag">Winner!</p>
-          <h2> {winner.header}</h2>
-          <p className="winner-slogan">{winner.slogan}</p>
-        </div>
-        <div className="winner-votes">
-          <div className="votes-tag">Total Votes: </div>
-          <div className="vote-count">{winner.voteCount}</div>
-        </div>
-      </div>
+        <article>
+          <h1>Winner</h1>
+          <h2>{winner.header}</h2>
+          <p>{winner.slogan}</p>
+          <h5>Total Votes:{winner.voteCount}</h5>
+        </article>
     );
   };
   const winnerCandidate = getWinner(candidates);
@@ -264,7 +258,10 @@ export function displayResults(candidates) {
   return (
     <>
       {candidates.length > 0 ? (
-        <div className="container-main">{displayWinner(candidates)}</div>
+          <div style={{...gridContainerStyle, gridTemplateRows: 'repeat(1, 1fr)', height: 'auto', textAlign: 'center', margin: '0 0 1rem 0', border: 'none',  padding: 0, gap: 0, borderRadius: 0 }}>
+              <div style={{ ...gridItemStyle, border: 'none', borderRadius: 0}}><img style={{...winnerImageBg}} src={winnerImage} alt="winnerImage" /></div>
+              <div style={{ ...gridItemStyle, backgroundColor: '#000', color: '#ffff', border: 'none', borderRadius: 0 }}>{displayWinner(candidates)}</div>
+          </div>
       ) : null}
       <h2 style={{ textAlign: "center"}}>Data visualization of the results</h2>
       <div style={gridContainerStyle}>
