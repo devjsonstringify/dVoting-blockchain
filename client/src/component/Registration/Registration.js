@@ -7,6 +7,7 @@ import NavbarAdmin from "../Navbar/NavigationAdmin";
 import NotInit from "../NotInit";
 
 // CSS
+import { formButton, formHeader, formInnerContainer, formInput, formInputWrapper, formRegistration, heroRegistration } from "../SharedStyling/style";
 import "./Registration.css";
 
 // Contract
@@ -167,55 +168,45 @@ export default class Registration extends Component {
         {!this.state.isElStarted && !this.state.isElEnded ? (
           <NotInit />
         ) : (
-          <>
-            <div className="container-item info">
-              <p>Total registered voters: {this.state.voters.length}</p>
-            </div>
-            <div className="container-main">
-              <h3>Registration</h3>
-              <small>Register to vote.</small>
-              <div className="container-item">
+            <>
+              <div style={{...heroRegistration}}/>
+              <div style={{ ...formRegistration }}>
+                <div style={{...formInnerContainer}}>
+                    <h3 style={{...formHeader}}>Voter registration</h3>
+              <div>
                 <form>
-                  <div className="div-li">
-                    <label className={"label-r"}>
-                      Account Address
-                      <input
-                        className={"input-r"}
+                  <div style={{...formInputWrapper}}>
+                        <label>Account Address</label>
+                        <input
+                           style={{...formInput}}
                         type="text"
                         value={this.state.account}
-                        style={{ width: "400px" }}
-                      />{" "}
-                    </label>
+                      />
                   </div>
-                  <div className="div-li">
-                    <label className={"label-r"}>
-                      Name
-                      <input
-                        className={"input-r"}
+                  <div style={{...formInputWrapper}}>
+                        <label>Name</label>
+                        <input
+                           style={{...formInput}}
                         type="text"
                         placeholder="eg. Ava"
                         value={this.state.voterName}
                         onChange={this.updateVoterName}
-                      />{" "}
-                    </label>
+                      />
                   </div>
-                  <div className="div-li">
-                    <label className={"label-r"}>
-                      Phone number <span style={{ color: "tomato" }}>*</span>
-                      <input
-                        className={"input-r"}
+                  <div style={{...formInputWrapper}}>
+                    <label>Phone number <span style={{ color: "tomato" }}>*</span></label>
+                    <input
+                         style={{...formInput}}
                         type="number"
                         placeholder="eg. 9841234567"
                         value={this.state.voterPhone}
                         onChange={this.updateVoterPhone}
                       />
-                    </label>
-                    </div>
-                     <div className="div-li">
-                    <label className={"label-r"}>
-                      Age  <span style={{ color: "tomato" }}>*</span>
-                      <input
-                        className={"input-r"}
+                      </div>
+                      <div style={{...formInputWrapper}}>
+                    <label>Age  <span style={{ color: "tomato" }}>*</span></label>
+                        <input
+                          style={{...formInput}}
                         type="number"
                         placeholder="eg. 18"
                           min="18"
@@ -223,13 +214,11 @@ export default class Registration extends Component {
                         value={this.state.voterAge}
                         onChange={this.updateVoterAge}
                       />
-                    </label>
-                  </div>
-                    <div class="div-li">
-                      <label class="label-r">
-                        Gender <span style={{color: "tomato"}}>*</span>
+                      </div>
+                    <div style={{...formInputWrapper}}>
+                        <label>Gender <span style={{ color: "tomato" }}>*</span></label>
                         <select
-                          class="input-r"
+                          style={{...formInput}}
                           value={this.state.voterGender}
                           onChange={this.updateVoterGender}
                         >
@@ -237,17 +226,16 @@ export default class Registration extends Component {
                           <option value="Male">Male</option>
                           <option value="Female">Female</option>
                         </select>
-                      </label>
                     </div>
-                  <p className="note">
+                  <p>
                     <span style={{ color: "tomato" }}> Note: </span>
                     <br /> Make sure your account address and Phone number are
                     correct. <br /> Admin might not approve your account if the
                     provided Phone number nub does not matches the account
                     address registered in admins catalogue.
-                  </p>
-                  <button
-                    className="btn-add"
+                      </p>
+                      <button
+                        style={{...formButton}}
                     disabled={
                       this.state.voterPhone.length !== 10 ||
                       this.state.currentVoter.isVerified
@@ -257,23 +245,11 @@ export default class Registration extends Component {
                     {this.state.currentVoter.isRegistered
                       ? "Update"
                       : "Register"}
-                  </button>
+                        </button>
                 </form>
               </div>
-            </div>
-            <div
-              className="container-main"
-              style={{
-                borderTop: this.state.currentVoter.isRegistered
-                  ? null
-                  : "1px solid",
-              }}
-            >
-              {loadCurrentVoter(
-                this.state.currentVoter,
-                this.state.currentVoter.isRegistered
-              )}
-            </div>
+              </div>
+              </div>
             {this.state.isAdmin ? (
               <div
                 className="container-main"
